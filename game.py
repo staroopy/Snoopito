@@ -104,11 +104,23 @@ class Game:
     @staticmethod
     def update():    
         Game.mainChar.update([Game.floor]);
+
         for seta in Game.setas:
             if(seta.update()):
                 Game.setas.remove(seta);
-                Game.setas.append(createSeta())
+                Game.setas.append(createSeta());
 
+        if(pyxel.btnp(pyxel.KEY_DOWN)):
+
+            down = [down for down in Game.setas if isinstance(down, SetasDown)];
+            Game.blocks[0].collide()    
+            
+        if(pyxel.btnp(pyxel.KEY_UP)):
+            print("UP")
+        if(pyxel.btnp(pyxel.KEY_LEFT)):
+            print("LEFT")
+        if(pyxel.btnp(pyxel.KEY_RIGHT)):
+            print("RIGHT")
 
     @staticmethod
     def draw():
