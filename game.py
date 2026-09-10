@@ -1,9 +1,12 @@
 import math;
 import pyxel;
+import random;
 
 def rect(x, y, w, h, color):
     pyxel.rect(x, y, w, h, color);
 
+def createSeta():
+    return SetasUp() if random.random() < 1/4 else SetasDown() if random.random() < 1/3 else SetasLeft() if random.random() < 1/2 else SetasRight();
 
 class Entity:
     def __init__(self, x, y, w, h, color):
@@ -17,8 +20,7 @@ class Entity:
         rect(self.x, self.y, self.w, self.h, self.color);
 
     def collide(self, other):
-        return other.x + other.w <= self.x and other.x >= self.x + self.w and other.y + other.h <= self.y and other.y >= self.y + self.h; 
-           
+        return other.x + other.w >= self.x and other.x <= self.x + self.w and other.y + other.h >= self.y and other.y <= self.y + self.h; 
 
 
 class Char(Entity):
@@ -30,13 +32,16 @@ class Char(Entity):
     def move(self, ang, mag):
         ang *= math.pi/180;
 
-        print(ang)
         self.velX += math.cos(ang) * mag;
         self.velY += math.sin(ang) * mag;
 
     def update(self, objs):
         # gravidade
         self.velY += 1;
+
+        if pyxel.btnp(pyxel.KEY_W) and self.grounded:
+            self.move(-90, 25);
+            self.grounded = False;
 
         self.x += self.velX;
         self.y += self.velY;
@@ -49,29 +54,116 @@ class Char(Entity):
                 self.velX = 0;
                 self.velY = 0;
 
-class Game:
+                self.grounded = True;
+
+class Seta(Entity):
+    def __init__(self, x, y, w, h, color):
+        super().__init__(x, y, w, h, color);
+
+    def update(self):
+        self.y += 10;
+        return self.y > pyxel.height;
+
+class SetasLeft(Seta):
+    def __init__(self):
+        super().__init__(pyxel.width*.3, -25, 50, 50, 4);
+
+class SetasUp(Seta):
+    def __init__(self):
+        super().__init__(pyxel.width*.4, -25, 50, 50, 2);
+
+class SetasRight(Seta):
+    def __init__(self):
+        super().__init__(pyxel.width*.5, -25, 50, 50, 5);
+
+class SetasDown(Seta):
+    def __init__(self):
+        super().__init__(pyxel.width*.6, -25, 50, 50, 3);
+
+class Block(Entity):
+    def __init__(self, x, y, w, h, color):
+        super().__init__(x, y, w, h, color);
+
+class Game:      
     @staticmethod
     def run():
-        pyxel.init(500, 500, title="Snoopi")
+        pyxel.init(860, 540, title="Snoopi")
 
         Game.mainChar = Char(50, 50, 50, 100);
-        Game.floor = Entity(0, 400, 500, 100, 1);
+        Game.floor = Entity(0, 440, 960, 100, 1);
+        Game.setas = [createSeta()];
+        Game.blocks = [
+            Block(pyxel.width*.3 - 15, pyxel.height*.8 - 15, 80, 80, 7),
+            Block(pyxel.width*.4 - 15, pyxel.height*.8 - 15, 80, 80, 7),
+            Block(pyxel.width*.5 - 15, pyxel.height*.8 - 15, 80, 80, 7),
+            Block(pyxel.width*.6 - 15, pyxel.height*.8 - 15, 80, 80, 7)
+        ];
 
         pyxel.run(Game.update, Game.draw);
 
-
     @staticmethod
     def update():    
-
-        if pyxel.btnp(pyxel.KEY_W):
-            Game.mainChar.move(-90, 25);
-
         Game.mainChar.update([Game.floor]);
+
+        for seta in Game.setas: 
+            if(seta.update()):
+                Game.setas.remove(seta);
+                Game.setas.append(createSeta());
+
+        print(Game.setas);
+        left = False;
+        if(pyxel.btnp(pyxel.KEY_LEFT)):
+            lefts = [left for left in Game.setas if isinstance(left, SetasLeft)];
+            for left in lefts:
+                if(Game.blocks[0].collide(left)):
+                    Game.setas.remove(left);
+                    Game.setas.append(createSeta());
+                    left = True;
+            if(not left):
+                print("!DEU");
+
+        if(pyxel.btnp(pyxel.KEY_UP)):
+            up = False;
+            ups = [up for up in Game.setas if isinstance(up, SetasUp)];
+            for up in ups:
+                if(Game.blocks[1].collide(up)):
+                    Game.setas.remove(up);
+                    Game.setas.append(createSeta());
+                    up = True;
+            if(not up):
+                print("!DEU");
+
+        if(pyxel.btnp(pyxel.KEY_RIGHT)):
+            right = False;
+            rights = [right for right in Game.setas if isinstance(right, SetasRight)];
+            for right in rights:
+                if(Game.blocks[2].collide(right)):
+                    Game.setas.remove(right);
+                    Game.setas.append(createSeta());
+                    right = True;
+            if(not right):
+                print("!DEU");
+
+        if(pyxel.btnp(pyxel.KEY_DOWN)):
+            down = False;
+            downs = [down for down in Game.setas if isinstance(down, SetasDown)];
+            for down in downs:
+                if(Game.blocks[3].collide(down)):
+                    Game.setas.remove(down);
+                    Game.setas.append(createSeta());
+                    down = True;
+            if(not down):
+                print("!DEU");
 
     @staticmethod
     def draw():
         pyxel.cls(0);
         Game.mainChar.draw();
         Game.floor.draw();
+
+        for block in Game.blocks:
+            block.draw();
+        for seta in Game.setas:
+            seta.draw();
 
 Game.run();
