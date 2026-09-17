@@ -6,8 +6,7 @@ def rect(x, y, w, h, color):
     pyxel.rect(x, y, w, h, color);
 
 def createSeta():
-    rnd = random.random();
-    return SetasUp() if rnd < 1/4 else SetasDown() if rnd < 1/3 else SetasLeft() if rnd < 1/2 else SetasRight();
+    return random.choice([SetasUp, SetasDown, SetasLeft, SetasRight])()
 
 def checkSeta(block, setas, Seta):
     collided = False;
@@ -51,10 +50,6 @@ class Char(Entity):
         # gravidade
         self.velY += 1;
 
-        if pyxel.btnp(pyxel.KEY_W) and self.grounded:
-            self.move(-90, 25);
-            self.grounded = False;
-
         self.x += self.velX;
         self.y += self.velY;
 
@@ -78,35 +73,35 @@ class Seta(Entity):
 
 class SetasLeft(Seta):
     def __init__(self):
-        super().__init__(pyxel.width*.3, -25, 25, 25, 4);
+        super().__init__(pyxel.width*2/7 - 25/2, -25, 25, 25, 4);
 
     def draw(self):
         rect(self.x, self.y, self.w, self.h, self.color);
-        pyxel.tri(self.x + 10, self.y + 25, self.x + 40, self.y + 10, self.x + 40, self.y + 40, 0);
+        pyxel.tri(self.x, self.y + 25/2, self.x + 23, self.y, self.x + 23, self.y + 23, 0);
 
 class SetasUp(Seta):
     def __init__(self):
-        super().__init__(pyxel.width*.4, -25, 25, 25, 2);
+        super().__init__(pyxel.width*3/7 - 25/2, -25, 25, 25, 2);
 
     def draw(self):
         rect(self.x, self.y, self.w, self.h, self.color);
-        pyxel.tri(self.x + 25, self.y + 10, self.x + 10, self.y + 40, self.x + 40, self.y + 40, 0);
+        pyxel.tri(self.x + 25/2, self.y, self.x + 2, self.y + 23, self.x + 23, self.y + 23, 0);
 
 class SetasRight(Seta):
     def __init__(self):
-        super().__init__(pyxel.width*.5, -25, 25, 25, 5);
+        super().__init__(pyxel.width*4/7 - 25/2, -25, 25, 25, 5);
 
     def draw(self): 
         rect(self.x, self.y, self.w, self.h, self.color);
-        pyxel.tri(self.x + 40, self.y + 25, self.x + 10, self.y + 10, self.x + 10, self.y + 40, 0);
+        pyxel.tri(self.x + 23, self.y + 25/2, self.x + 2, self.y + 2, self.x + 2, self.y + 25, 0);
 
 class SetasDown(Seta):
     def __init__(self):
-        super().__init__(pyxel.width*.6, -25, 25, 25, 3);
+        super().__init__(pyxel.width*5/7 - 25/2, -25, 25, 25, 3);
 
     def draw(self):
         rect(self.x, self.y, self.w, self.h, self.color);
-        pyxel.tri(self.x + 25, self.y + 40, self.x + 10, self.y + 10, self.x + 40, self.y + 10, 0);
+        pyxel.tri(self.x + 25/2, self.y + 23, self.x + 2, self.y + 2, self.x + 25, self.y + 2, 0);
 
 class Block(Entity):
     def __init__(self, x, y, w, h, color):
@@ -115,17 +110,18 @@ class Block(Entity):
 class Game:      
     @staticmethod
     def run():
-        pyxel.init(350, 200, title="Snoopi")
+        pyxel.init(350, 200, title="Snoopy")
 
         Game.score = 0;
+        Game.life = 1;
         Game.mainChar = Char(20, 0, 20, 40);
         Game.floor = Entity(0, 150, 350, 50, 1);
         Game.setas = [createSeta()];
         Game.blocks = [
-            Block(pyxel.width*2/7 - pyxel.width/20, pyxel.height*.8 - 15, pyxel.width/10, 30, 7),
-            Block(pyxel.width*3/7 - pyxel.width/20, pyxel.height*.8 - 15, pyxel.width/10, 30, 7),
-            Block(pyxel.width*4/7 - pyxel.width/20, pyxel.height*.8 - 15, pyxel.width/10, 30, 7),
-            Block(pyxel.width*5/7 - pyxel.width/20, pyxel.height*.8 - 15, pyxel.width/10, 30, 7)
+            Block(pyxel.width*2/7 - 15, pyxel.height*.8 - 15, 30, 30, 7),
+            Block(pyxel.width*3/7 - 15, pyxel.height*.8 - 15, 30, 30, 7),
+            Block(pyxel.width*4/7 - 15, pyxel.height*.8 - 15, 30, 30, 7),
+            Block(pyxel.width*5/7 - 15, pyxel.height*.8 - 15, 30, 30, 7)
         ];
 
         pyxel.run(Game.update, Game.draw);
@@ -136,6 +132,7 @@ class Game:
 
         for seta in Game.setas: 
             if(seta.update()):
+                Game.life -= 0.1;
                 Game.setas.remove(seta);
                 Game.setas.append(createSeta());
 
@@ -146,11 +143,17 @@ class Game:
             Game.score += checkSeta(Game.blocks[1], Game.setas, SetasUp);
 
         if(pyxel.btnp(pyxel.KEY_RIGHT)):
-            Game.score +=  checkSeta(Game.blocks[2], Game.setas, SetasRight);
+            Game.score += checkSeta(Game.blocks[2], Game.setas, SetasRight);
 
         if(pyxel.btnp(pyxel.KEY_DOWN)):
             Game.score += checkSeta(Game.blocks[3], Game.setas, SetasDown);
 
+        if pyxel.btnp(pyxel.KEY_W) and Game.char.grounded:
+            Game.char.move(-90, 25);
+            Game.char.grounded = False;
+
+        if not int(Game.life*10):
+            pyxel.quit();
     @staticmethod
     def draw():
         pyxel.cls(0);
@@ -162,5 +165,8 @@ class Game:
         for seta in Game.setas:
             seta.draw();
 
-        pyxel.text(10, 10, f"Score: {Game.score}", 5);
+        pyxel.text(10, 45, f"Score: {Game.score}", 5);
+
+        rect(10, 10, 100, 30, 7);
+        rect(15, 15, 90 * Game.life, 20, 8);
 Game.run();
