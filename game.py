@@ -1,9 +1,7 @@
-import math;
 import pyxel;
 import random;
-
-def rect(x, y, w, h, color):
-    pyxel.rect(x, y, w, h, color);
+from entity import *;
+from seta import *;
 
 def createSeta():
     return random.choice([SetasUp, SetasDown, SetasLeft, SetasRight])()
@@ -14,98 +12,11 @@ def checkSeta(block, setas, Seta):
     for seta in groups:
         if(block.collide(seta)):
             setas.remove(seta);
-            setas.append(createSeta());
+            if not len(setas):
+                setas.append(createSeta());
             collided = True;
 
     return collided;
-
-class Entity:
-    def __init__(self, x, y, w, h, color):
-        self.x = x;
-        self.y = y;
-        self.w = w;
-        self.h = h;
-        self.color = color;
-
-    def draw(self):
-        rect(self.x, self.y, self.w, self.h, self.color);
-
-    def collide(self, other):
-        return other.x + other.w >= self.x and other.x <= self.x + self.w and other.y + other.h >= self.y and other.y <= self.y + self.h; 
-
-
-class Char(Entity):
-    def __init__(self, x, y, w, h):
-        super().__init__(x, y, w, h, 11);
-        self.velX = 0;
-        self.velY = 0;
-
-    def move(self, ang, mag):
-        ang *= math.pi/180;
-
-        self.velX += math.cos(ang) * mag;
-        self.velY += math.sin(ang) * mag;
-
-    def update(self, objs):
-        # gravidade
-        self.velY += 1;
-
-        self.x += self.velX;
-        self.y += self.velY;
-
-        for obj in objs:
-            if(self.collide(obj)):
-                self.x -= self.velX;
-                self.y -= self.velY;
-
-                self.velX = 0;
-                self.velY = 0;
-
-                self.grounded = True;
-
-class Seta(Entity):
-    def __init__(self, x, y, w, h, color):
-        super().__init__(x, y, w, h, color);
-
-    def update(self):
-        self.y += 10;
-        return self.y > pyxel.height;
-
-class SetasLeft(Seta):
-    def __init__(self):
-        super().__init__(pyxel.width*2/7 - 25/2, -25, 25, 25, 4);
-
-    def draw(self):
-        rect(self.x, self.y, self.w, self.h, self.color);
-        pyxel.tri(self.x, self.y + 25/2, self.x + 23, self.y, self.x + 23, self.y + 23, 0);
-
-class SetasUp(Seta):
-    def __init__(self):
-        super().__init__(pyxel.width*3/7 - 25/2, -25, 25, 25, 2);
-
-    def draw(self):
-        rect(self.x, self.y, self.w, self.h, self.color);
-        pyxel.tri(self.x + 25/2, self.y, self.x + 2, self.y + 23, self.x + 23, self.y + 23, 0);
-
-class SetasRight(Seta):
-    def __init__(self):
-        super().__init__(pyxel.width*4/7 - 25/2, -25, 25, 25, 5);
-
-    def draw(self): 
-        rect(self.x, self.y, self.w, self.h, self.color);
-        pyxel.tri(self.x + 23, self.y + 25/2, self.x + 2, self.y + 2, self.x + 2, self.y + 25, 0);
-
-class SetasDown(Seta):
-    def __init__(self):
-        super().__init__(pyxel.width*5/7 - 25/2, -25, 25, 25, 3);
-
-    def draw(self):
-        rect(self.x, self.y, self.w, self.h, self.color);
-        pyxel.tri(self.x + 25/2, self.y + 23, self.x + 2, self.y + 2, self.x + 25, self.y + 2, 0);
-
-class Block(Entity):
-    def __init__(self, x, y, w, h, color):
-        super().__init__(x, y, w, h, color);
 
 class Game:      
     @staticmethod
@@ -114,59 +25,67 @@ class Game:
 
         Game.score = 0;
         Game.life = 1;
-        Game.mainChar = Char(20, 0, 20, 40);
+        Game.mainChar = Char(30, 110, 20, 40);
+        Game.charlie = Charlie(300, 110, 20, 40);
         Game.floor = Entity(0, 150, 350, 50, 1);
         Game.setas = [createSeta()];
         Game.blocks = [
-            Block(pyxel.width*2/7 - 15, pyxel.height*.8 - 15, 30, 30, 7),
-            Block(pyxel.width*3/7 - 15, pyxel.height*.8 - 15, 30, 30, 7),
-            Block(pyxel.width*4/7 - 15, pyxel.height*.8 - 15, 30, 30, 7),
-            Block(pyxel.width*5/7 - 15, pyxel.height*.8 - 15, 30, 30, 7)
+            [Block(pyxel.width*2/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_LEFT, SetasLeft],
+            [Block(pyxel.width*3/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_UP, SetasUp],
+            [Block(pyxel.width*4/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_RIGHT, SetasRight],
+            [Block(pyxel.width*5/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_DOWN, SetasDown]
         ];
+        Game.amount = 0;
 
         pyxel.run(Game.update, Game.draw);
 
     @staticmethod
     def update():    
-        Game.mainChar.update([Game.floor]);
 
+        for i in range(len(Game.blocks)):
+            if(pyxel.btnp(Game.blocks[i][1])):
+                hit = checkSeta(Game.blocks[i][0], Game.setas, Game.blocks[i][2]);
+                Game.score += hit;
+                Game.life -= 0.1 * (not hit);
+
+                if not Game.score % 5 and hit:
+                    Game.charlie.throw();
+                    Game.charlie.speed = min(Game.charlie.speed + 0.5, 10);
+                    Game.amount += 0.01;
+
+        Game.charlie.update();
+        Game.mainChar.update(Game.charlie.bird[0] if len(Game.charlie.bird) else None);
+
+        if random.random() < Game.amount: 
+            Game.setas.append(createSeta());
+            
         for seta in Game.setas: 
             if(seta.update()):
                 Game.life -= 0.1;
                 Game.setas.remove(seta);
-                Game.setas.append(createSeta());
-
-        if(pyxel.btnp(pyxel.KEY_LEFT)):
-            Game.score += checkSeta(Game.blocks[0], Game.setas, SetasLeft);
-
-        if(pyxel.btnp(pyxel.KEY_UP)):
-            Game.score += checkSeta(Game.blocks[1], Game.setas, SetasUp);
-
-        if(pyxel.btnp(pyxel.KEY_RIGHT)):
-            Game.score += checkSeta(Game.blocks[2], Game.setas, SetasRight);
-
-        if(pyxel.btnp(pyxel.KEY_DOWN)):
-            Game.score += checkSeta(Game.blocks[3], Game.setas, SetasDown);
-
-        if pyxel.btnp(pyxel.KEY_W) and Game.char.grounded:
-            Game.char.move(-90, 25);
-            Game.char.grounded = False;
+                if not len(Game.setas):
+                    Game.setas.append(createSeta());
 
         if not int(Game.life*10):
             pyxel.quit();
+
+
+
     @staticmethod
     def draw():
         pyxel.cls(0);
         Game.mainChar.draw();
+        Game.charlie.draw();
         Game.floor.draw();
 
         for block in Game.blocks:
-            block.draw();
+            block[0].draw();
         for seta in Game.setas:
             seta.draw();
 
-        pyxel.text(10, 45, f"Score: {Game.score}", 5);
+        pyxel.text(10, 30, f"Score: {Game.score}", 5);
 
-        rect(10, 10, 100, 30, 7);
-        rect(15, 15, 90 * Game.life, 20, 8);
+        rect(10, 10, 50, 16, 7);
+        rect(12, 12, (50 - 4) * Game.life, 16 - 4, 8);
+
 Game.run();
