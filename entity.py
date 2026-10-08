@@ -30,7 +30,18 @@ class Char(Entity):
         self.velY = 0;
         self.maxHeight = 30;
         self.minHeight = [y];
+        self.count = 0;
 
+    def draw(self):
+        # rect(self.x, self.y, self.w, self.h, self.color);
+        
+        if pyxel.btnp(pyxel.KEY_W): 
+            self.count +=1;
+
+        self.count %= 6;
+
+        pyxel.blt(self.x, self.y, 0, 7*(self.count+1) + self.w*self.count, 0, self.w*1.2, self.h*1.1, 2);
+    
     def update(self, obj):
         self.y = self.minHeight[0]; 
         
@@ -77,7 +88,7 @@ class Charlie(Entity):
 
     def throw(self):
         self.pending += 1;
-
+#passaro
 class Bird(Entity):
     def __init__(self, x, y, w, h):
         super().__init__(x, y, w, h, 13)
@@ -85,7 +96,50 @@ class Bird(Entity):
     def update(self, speed):
         self.x -= speed;
         return self.x + self.w < 0
+    def draw (self):
+        rect(self.x,self.y,self.w,self.h,self.color)
+        pyxel.blt(self.x,self.y,0,71,38,25,25,11)
+
 
 class Block(Entity):
     def __init__(self, x, y, w, h, color):
         super().__init__(x, y, w, h, color);
+
+
+class Blockcima(Block):
+    def __init__(self, x, y, w, h, color):
+        super().__init__(x, y, w, h, color)
+
+    def draw(self):
+       # rect(self.x,self.y,self.w,self.h,self.color)
+        pyxel.blt(self.x, self.y, 0, 165, 115, 28, 24, 11)
+
+
+class Blockbaixo(Block):
+    def __init__(self, x, y, w, h, color):
+        super().__init__(x, y, w, h, color)
+
+    def draw(self):
+        #rect(self.x,self.y,self.w,self.h,self.color)
+
+        pyxel.blt(self.x, self.y, 0, 195, 114, 28, 24, 11)
+
+
+class Blockesquerda(Block):
+    def __init__(self, x, y, w, h, color):
+        super().__init__(x, y, w, h, color)
+
+    def draw(self):
+        # rect(self.x,self.y,self.w,self.h,self.color)
+
+        pyxel.blt(self.x, self.y, 0, 103, 114, 26, 26, 11)
+
+
+class Blockdireita(Block):
+    def __init__(self, x, y, w, h, color):
+        super().__init__(x, y, w, h, color)
+
+    def draw(self):
+        #rect(self.x,self.y,self.w,self.h,self.color)
+
+        pyxel.blt(self.x, self.y, 0, 135, 114, 28, 25, 11)

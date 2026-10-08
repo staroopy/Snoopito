@@ -22,7 +22,7 @@ class Game:
     @staticmethod
     def run():
         pyxel.init(350, 200, title="Snoopy")
-
+        pyxel.image(0).load(0, 0, "gazht.png")
         Game.score = 0;
         Game.life = 1;
         Game.mainChar = Char(30, 110, 20, 40);
@@ -30,10 +30,10 @@ class Game:
         Game.floor = Entity(0, 150, 350, 50, 1);
         Game.setas = [createSeta()];
         Game.blocks = [
-            [Block(pyxel.width*2/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_LEFT, SetasLeft],
-            [Block(pyxel.width*3/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_UP, SetasUp],
-            [Block(pyxel.width*4/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_RIGHT, SetasRight],
-            [Block(pyxel.width*5/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_DOWN, SetasDown]
+            [Blockesquerda(pyxel.width*2/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_LEFT, SetasLeft],
+            [Blockcima(pyxel.width*3/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_UP, SetasUp],
+            [Blockdireita(pyxel.width*4/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_RIGHT, SetasRight],
+            [Blockbaixo(pyxel.width*5/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_DOWN, SetasDown]
         ];
         Game.amount = 0;
 

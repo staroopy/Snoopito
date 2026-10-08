@@ -11,32 +11,33 @@ class Seta(Entity):
 
 class SetasLeft(Seta):
     def __init__(self):
-        super().__init__(pyxel.width*2/7 - 25/2, -25, 25, 25, 4);
+        super().__init__(pyxel.width*2/7 - 25/2, -25, 25, 25, 11);
 
     def draw(self):
-        rect(self.x, self.y, self.w, self.h, self.color);
-        pyxel.tri(self.x, self.y + 25/2, self.x + 23, self.y, self.x + 23, self.y + 23, 0);
+       
+        pyxel.blt(self.x,self.y,0,9,135,25,25,11)
 
 class SetasUp(Seta):
     def __init__(self):
-        super().__init__(pyxel.width*3/7 - 25/2, -25, 25, 25, 2);
+        super().__init__(pyxel.width*3/7 - 25/2, -25, 25, 25, 11);
 
     def draw(self):
-        rect(self.x, self.y, self.w, self.h, self.color);
-        pyxel.tri(self.x + 25/2, self.y, self.x + 2, self.y + 23, self.x + 23, self.y + 23, 0);
+
+        pyxel.blt(self.x,self.y,0,9,161,25,25,11)
+        
 
 class SetasRight(Seta):
+
     def __init__(self):
-        super().__init__(pyxel.width*4/7 - 25/2, -25, 25, 25, 5);
+        super().__init__(pyxel.width*4/7 - 25/2, -25, 25, 25, 11);
 
     def draw(self): 
-        rect(self.x, self.y, self.w, self.h, self.color);
-        pyxel.tri(self.x + 23, self.y + 25/2, self.x + 2, self.y + 2, self.x + 2, self.y + 25, 0);
+
+        pyxel.blt(self.x,self.y,0,35,135,25,25,11)
 
 class SetasDown(Seta):
     def __init__(self):
         super().__init__(pyxel.width*5/7 - 25/2, -25, 25, 25, 3);
 
     def draw(self):
-        rect(self.x, self.y, self.w, self.h, self.color);
-        pyxel.tri(self.x + 25/2, self.y + 23, self.x + 2, self.y + 2, self.x + 25, self.y + 2, 0);
+         pyxel.blt(self.x,self.y,0,36,163,25,25,11)
