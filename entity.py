@@ -28,7 +28,7 @@ class Char(Entity):
         super().__init__(x, y, w, h, color);
         self.velX = 0;
         self.velY = 0;
-        self.maxHeight = 30;
+        self.maxHeight = 10;
         self.minHeight = [y];
 
     def update(self, obj):
