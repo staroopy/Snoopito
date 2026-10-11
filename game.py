@@ -42,21 +42,21 @@ class Game:
                 3
             )
     
-            self.estado = 'capa'  #Varias telas dps dessa
+            self.estado = 'jogo'  #Varias telas dps dessa
             self.play_pressionado = False
             self.quit_pressionado = False
             self.music_pressionado = False
             self.score = 0;
             self.life = 1;
-            self.mainChar = Char(30, 110, 20, 40);
+            self.mainChar = Char(30, 124, 19, 30);
             self.charlie = Charlie(300, 110, 20, 40);
             self.floor = Entity(20, 150, 310, 20, 3);
             self.setas = [createSeta()];
             self.blocks = [
-                [Block(pyxel.width*2/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_LEFT, SetasLeft],
-                [Block(pyxel.width*3/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_UP, SetasUp],
-                [Block(pyxel.width*4/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_RIGHT, SetasRight],
-                [Block(pyxel.width*5/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_DOWN, SetasDown]
+                [Blockesquerda(pyxel.width*2/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_LEFT, SetasLeft],
+                [Blockcima(pyxel.width*3/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_UP, SetasUp],
+                [Blockdireita(pyxel.width*4/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_RIGHT, SetasRight],
+                [Blockbaixo(pyxel.width*5/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_DOWN, SetasDown]
             ];
             self.amount = 0;
 
@@ -143,7 +143,7 @@ class Game:
 
         elif self.estado == 'jogo':
             self.charlie.update();
-            self.mainChar.update(self.charlie.bird[0] if len(self.charlie.bird) else None);
+            self.mainChar.update(self.charlie.bird);
 
             if random.random() < self.amount: 
                 self.setas.append(createSeta());
@@ -165,7 +165,6 @@ class Game:
                     self.life -= 0.1 * (not hit);
 
                     if not self.score % 5 and hit:
-                        self.charlie.throw();
                         self.charlie.speed = min(self.charlie.speed + 0.5, 10);
                         self.amount += 0.01;
             # print(not int(self.life*10))
@@ -204,15 +203,18 @@ class Game:
             pyxel.blt(20, 140, 0, 90, 32, 80, 40, 11)  # Bonequinhos
             pyxel.text(20, 183, "Feito por Alyssa Magano,\nGabriel Canto e Gabriel Estrela", 0)
         
-        elif self.estado== 'jogo':
+        elif self.estado == 'jogo':
             pyxel.cls(5);
+            rect(20,40,310,120,15)
+            
+            self.floor.draw();
+            self.mainChar.draw();
+            self.charlie.draw();
+
+            rect(0,0,20,pyxel.height,5);
             pyxel.rectb(19, 39, 312, 132, 0) # Borda
             pyxel.blt(10, 160, 0, 90, 32, 80, 40, 11) # Bonequinhos na tela
             pyxel.blt(240, 185, 0, 0, 75, 70, 10, 11) # Palavra "Snoopito"
-            rect(20,40,310,120,15)
-            self.mainChar.draw();
-            self.charlie.draw();
-            self.floor.draw();
 
             for block in self.blocks:
                 block[0].draw();

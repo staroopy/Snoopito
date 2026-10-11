@@ -1,8 +1,6 @@
 import math;
 import pyxel;
 
-JUMP_BEGIN = .25  # fração da largura da tela onde o pulo começa
-
 def rect(x, y, w, h, color):
     pyxel.rect(x, y, w, h, color);
 
@@ -28,66 +26,41 @@ class Char(Entity):
         super().__init__(x, y, w, h, color);
         self.velX = 0;
         self.velY = 0;
-        self.maxHeight = 10;
+        self.maxHeight = 40;
         self.minHeight = [y];
-        self.count = 0;
+        self.t = 0;
 
     def draw(self):
         # rect(self.x, self.y, self.w, self.h, self.color);
         
-        if pyxel.btnp(pyxel.KEY_W): 
-            self.count +=1;
-
-        self.count %= 6;
-
-        pyxel.blt(self.x, self.y, 0, 7*(self.count+1) + self.w*self.count, 0, self.w*1.2, self.h*1.1, 2);
+        spriteCount = round(6 * round(self.t*10)/10)
+        pyxel.blt(self.x, self.y, 0, 0 + self.w*spriteCount, 0, self.w, self.h, 11);
     
     def update(self, obj):
         self.y = self.minHeight[0]; 
-        
+        self.t = 0;
         if obj:
-            begin = pyxel.width*JUMP_BEGIN;
+            begin = pyxel.width * .25;
             end = 0 - obj.w;
             t = (obj.x - begin) / (end - begin);
-            t = abs(abs(t - .5)*2-1)  if t >= 0 else 0;
-            self.y = lerp(self.minHeight[0], self.maxHeight, t); 
+            self.t = abs(abs(t - .5)*2-1) if t >= 0 else 0;
+            self.y = lerp(self.minHeight[0], self.maxHeight, self.t); 
 
 
 class Charlie(Entity):
     def __init__(self, x, y, w, h):
         super().__init__(x, y, w, h, 13)
-        self.bird = [];
-        self.pending = 0;
-
-        # velocidade única pra todos os pássaros, assim ninguém alcança o da
-        # frente e a distância mínima do canThrow continua valendo
-        self.speed = 5;
-
-    def canThrow(self):
-        if not self.bird:
-            return True;
-        # o último pássaro precisa estar longe o bastante pra que, quando o da
-        # frente sumir, o próximo ainda não tenha entrado na faixa do pulo
-        last = self.bird[-1];
-        return self.x - last.x >= pyxel.width*JUMP_BEGIN + last.w;
+        self.speed = 1;
+        self.bird = Bird(x, y+h/2, 1, 1);
 
     def update(self):
-        if self.pending and self.canThrow():
-            self.bird.append(Bird(self.x, self.y, 5, 5));
-            self.pending -= 1;
-
-        for bird in self.bird:
-            if(bird.update(self.speed)):
-                self.bird.remove(bird);
+        if(self.bird.update(self.speed)):
+            self.bird.x = self.x;
 
     def draw(self):
         super().draw();
-
-        for bird in self.bird:
-            bird.draw()
-
-    def throw(self):
-        self.pending += 1;
+        print(self.speed)
+        self.bird.draw();
 #passaro
 class Bird(Entity):
     def __init__(self, x, y, w, h):
