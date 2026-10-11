@@ -59,7 +59,8 @@ class Charlie(Entity):
 
     def draw(self):
         super().draw();
-        print(self.speed)
+        pyxel.blt(self.x, self.y, 0, 0, 37, self.w, self.h, 11);
+
         self.bird.draw();
 #passaro
 class Bird(Entity):
