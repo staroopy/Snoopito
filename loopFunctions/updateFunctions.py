@@ -45,25 +45,25 @@ def updateMusica(game):
 
     if no_california and pyxel.btn(pyxel.MOUSE_BUTTON_LEFT):
         pyxel.play(3, 1)
-        pyxel.sounds[0].pcm("californiando.ogg")
+        pyxel.sounds[0].pcm("musicas/californiando.ogg")
         pyxel.play(0, 0, loop=True)
         pyxel.channels[0].gain = 0.5
 
     elif no_creep and pyxel.btn(pyxel.MOUSE_BUTTON_LEFT):
         pyxel.play(3, 1)
-        pyxel.sounds[0].pcm("Creep.ogg")
+        pyxel.sounds[0].pcm("musicas/Creep.ogg")
         pyxel.play(0, 0, loop=True)
         pyxel.channels[0].gain = 0.5
 
     elif no_wall and pyxel.btn(pyxel.MOUSE_BUTTON_LEFT):
         pyxel.play(3, 1)
-        pyxel.sounds[0].pcm("uau.ogg")
+        pyxel.sounds[0].pcm("musicas/uau.ogg")
         pyxel.play(0, 0, loop=True)
         pyxel.channels[0].gain = 0.3
 
     elif no_secret and pyxel.btn(pyxel.MOUSE_BUTTON_LEFT):
         pyxel.play(3,1)
-        pyxel.sounds[0].pcm("Cheio.ogg")
+        pyxel.sounds[0].pcm("musicas/Cheio.ogg")
         pyxel.play(0, 0, loop=True)
         pyxel.channels[0].gain = 0.3
 
