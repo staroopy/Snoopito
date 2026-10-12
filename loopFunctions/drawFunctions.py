@@ -35,15 +35,19 @@ def drawGame(game):
     game.mainChar.draw();
     game.charlie.draw();
 
-    rect(0,0,20,pyxel.height,5);
-    pyxel.rectb(19, 39, 312, 132, 0) # Borda
-    pyxel.blt(10, 160, 0, 90, 32, 80, 40, 11) # Bonequinhos na tela
-    pyxel.blt(240, 185, 0, 0, 75, 70, 10, 11) # Palavra "Snoopito"
-
     for block in game.blocks:
         block[0].draw();
     for seta in game.setas:
         seta.draw();
+
+    rect(0, 0, 20, pyxel.height, 5);
+    rect(0, 0, pyxel.width, 40, 5);
+    rect(0, 170, pyxel.width, 40, 5);
+        
+    pyxel.rectb(19, 39, 312, 132, 0) # Borda
+    pyxel.blt(10, 160, 0, 90, 32, 80, 40, 11) # Bonequinhos na tela
+    pyxel.blt(240, 185, 0, 0, 75, 70, 10, 11) # Palavra "Snoopito"
+
 
     pyxel.text(10, 30, f"Score: {game.score}", 7);
 

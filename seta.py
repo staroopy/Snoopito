@@ -14,7 +14,7 @@ class SetasLeft(Seta):
         super().__init__(pyxel.width*2/7 - 25/2, -25, 25, 25, 11);
 
     def draw(self):
-       
+        rect(self.x, self.y, self.w, self.h, 4)
         pyxel.blt(self.x,self.y,0,9,135,25,25,11)
 
 class SetasUp(Seta):
@@ -22,6 +22,7 @@ class SetasUp(Seta):
         super().__init__(pyxel.width*3/7 - 25/2, -25, 25, 25, 11);
 
     def draw(self):
+        rect(self.x, self.y, self.w, self.h, 4)
 
         pyxel.blt(self.x,self.y,0,9,161,25,25,11)
         
@@ -32,6 +33,7 @@ class SetasRight(Seta):
         super().__init__(pyxel.width*4/7 - 25/2, -25, 25, 25, 11);
 
     def draw(self): 
+        rect(self.x, self.y, self.w, self.h, 4)
 
         pyxel.blt(self.x,self.y,0,35,135,25,25,11)
 
@@ -40,4 +42,5 @@ class SetasDown(Seta):
         super().__init__(pyxel.width*5/7 - 25/2, -25, 25, 25, 3);
 
     def draw(self):
-         pyxel.blt(self.x,self.y,0,36,163,25,25,11)
+        rect(self.x, self.y, self.w, self.h, 4)
+        pyxel.blt(self.x,self.y,0,36,163,25,25,11)

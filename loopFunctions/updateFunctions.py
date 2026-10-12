@@ -102,7 +102,12 @@ def updateGame(game):
         game.estado = "gameo"
 
     for i in range(len(game.blocks)):
+        game.blocks[i][0].update();
+
         if(pyxel.btnp(game.blocks[i][1])):
+            
+            game.blocks[i][0].touch();
+
             hit = checkSeta(game.blocks[i][0], game.setas, game.blocks[i][2]);
             game.score += hit;
             game.life -= 0.1 * (not hit);

@@ -33,7 +33,7 @@ class Char(Entity):
     def draw(self):
         # rect(self.x, self.y, self.w, self.h, self.color);
         
-        spriteCount = round(6 * round(self.t*10)/10)
+        spriteCount = round(6 * min(round(self.t*10)/10 *2, 1));
         pyxel.blt(self.x, self.y, 0, 0 + self.w*spriteCount, 0, self.w, self.h, 11);
     
     def update(self, obj):
@@ -51,15 +51,19 @@ class Charlie(Entity):
     def __init__(self, x, y, w, h):
         super().__init__(x, y, w, h, 13)
         self.speed = 1;
-        self.bird = Bird(x, y+h/2, 1, 1);
+        self.bird = Bird(x, y+h*.3, 1, 1);
+        self.sprite = 1;
 
     def update(self):
         if(self.bird.update(self.speed)):
             self.bird.x = self.x;
+            self.sprite = 0;
+        
+        if(self.bird.x < pyxel.width/2):
+            self.sprite = 1;
 
     def draw(self):
-        super().draw();
-        pyxel.blt(self.x, self.y, 0, 0, 37, self.w, self.h, 11);
+        pyxel.blt(self.x, self.y, 0, self.w*self.sprite, 37, self.w, self.h, 11);
 
         self.bird.draw();
 #passaro
@@ -78,6 +82,13 @@ class Bird(Entity):
 class Block(Entity):
     def __init__(self, x, y, w, h, color):
         super().__init__(x, y, w, h, color);
+        self.scale = 1;
+
+    def touch(self):
+        self.scale = 1.3;
+
+    def update(self):
+        self.scale = lerp(self.scale, 1, .3);
 
 
 class Blockcima(Block):
@@ -85,8 +96,7 @@ class Blockcima(Block):
         super().__init__(x, y, w, h, color)
 
     def draw(self):
-       # rect(self.x,self.y,self.w,self.h,self.color)
-        pyxel.blt(self.x, self.y, 0, 165, 115, 28, 24, 11)
+        pyxel.blt(self.x, self.y, 0, 166, 114, self.w, self.h, 11, scale=self.scale)
 
 
 class Blockbaixo(Block):
@@ -94,9 +104,7 @@ class Blockbaixo(Block):
         super().__init__(x, y, w, h, color)
 
     def draw(self):
-        #rect(self.x,self.y,self.w,self.h,self.color)
-
-        pyxel.blt(self.x, self.y, 0, 195, 114, 28, 24, 11)
+        pyxel.blt(self.x, self.y, 0, 197, 114, self.w, self.h, 11, scale=self.scale)
 
 
 class Blockesquerda(Block):
@@ -104,9 +112,7 @@ class Blockesquerda(Block):
         super().__init__(x, y, w, h, color)
 
     def draw(self):
-        # rect(self.x,self.y,self.w,self.h,self.color)
-
-        pyxel.blt(self.x, self.y, 0, 103, 114, 26, 26, 11)
+        pyxel.blt(self.x, self.y, 0, 103, 114, self.w, self.h, 11, scale=self.scale)
 
 
 class Blockdireita(Block):
@@ -114,6 +120,4 @@ class Blockdireita(Block):
         super().__init__(x, y, w, h, color)
 
     def draw(self):
-        #rect(self.x,self.y,self.w,self.h,self.color)
-
-        pyxel.blt(self.x, self.y, 0, 135, 114, 28, 25, 11)
+        pyxel.blt(self.x, self.y, 0, 135, 114, self.w, self.h, 11, scale=self.scale)

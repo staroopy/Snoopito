@@ -26,21 +26,21 @@ class Game:
             3
         )
 
-        self.estado = 'capa'  #Varias telas dps dessa
+        self.estado = 'jogo'  #Varias telas dps dessa
         self.play_pressionado = False
         self.quit_pressionado = False
         self.music_pressionado = False
         self.score = 0;
         self.life = 1;
         self.mainChar = Char(30, 124, 19, 30);
-        self.charlie = Charlie(300, 110, 20, 40);
+        self.charlie = Charlie(300, 118, 22, 33);
         self.floor = Entity(20, 150, 310, 20, 3);
         self.setas = [createSeta()];
         self.blocks = [
-            [Blockesquerda(pyxel.width*2/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_LEFT, SetasLeft],
-            [Blockcima(pyxel.width*3/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_UP, SetasUp],
-            [Blockdireita(pyxel.width*4/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_RIGHT, SetasRight],
-            [Blockbaixo(pyxel.width*5/7 - 15, pyxel.height*.8 - 15, 30, 30, 7), pyxel.KEY_DOWN, SetasDown]
+            [Blockesquerda(pyxel.width*2/7 - 13, pyxel.height*.8 - 15, 26, 24, 7), pyxel.KEY_LEFT, SetasLeft],
+            [Blockcima(pyxel.width*3/7 - 13, pyxel.height*.8 - 15, 26, 24, 7), pyxel.KEY_UP, SetasUp],
+            [Blockdireita(pyxel.width*4/7 - 13, pyxel.height*.8 - 15, 26, 24, 7), pyxel.KEY_RIGHT, SetasRight],
+            [Blockbaixo(pyxel.width*5/7 - 13, pyxel.height*.8 - 15, 26, 24, 7), pyxel.KEY_DOWN, SetasDown]
         ];
         self.amount = 0;
 
