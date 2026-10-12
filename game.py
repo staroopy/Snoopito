@@ -26,7 +26,7 @@ class Game:
             3
         )
 
-        self.estado = 'jogo'  #Varias telas dps dessa
+        self.estado = 'capa'  #Varias telas dps dessa
         self.play_pressionado = False
         self.quit_pressionado = False
         self.music_pressionado = False
